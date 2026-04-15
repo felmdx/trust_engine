@@ -10,11 +10,11 @@ import java.util.UUID;
  */
 public interface DispositivoRepository {
 
-    Optional<Dispositivo> findById(UUID id);
+    Optional<Dispositivo> procuraPorId(UUID id);
     
-    Optional<Dispositivo> findByFingerprint(String deviceFingerprint);
+    Optional<Dispositivo> procuraPorFingerprint(String deviceFingerprint);
 
-    List<Dispositivo> findAllByUsuarioId(UUID usuarioId);
+    List<Dispositivo> procuraTodosPorUsuarioId(UUID usuarioId);
     
-    void save(Dispositivo Dispositivo);
+    void salva(Dispositivo Dispositivo);
 }

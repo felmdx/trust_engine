@@ -17,7 +17,7 @@ public class TentativaLogin {
     private final RiscoCalculado riscoCalculado;
 
     public TentativaLogin(UUID usuarioId, String ipOrigem, String userAgent, boolean senhaCorreta, RiscoCalculado riscoCalculado) {
-        validate(usuarioId, ipOrigem);
+        valida(usuarioId, ipOrigem);
         this.id = UUID.randomUUID();
         this.usuarioId = usuarioId;
         this.ipOrigem = ipOrigem;
@@ -37,7 +37,7 @@ public class TentativaLogin {
         this.riscoCalculado = riscoCalculado;
     }
 
-    public void validate(UUID usuarioId, String ipOrigem){
+    public void valida(UUID usuarioId, String ipOrigem){
         if (usuarioId == null || ipOrigem == null || ipOrigem.isBlank()) {
             throw new IllegalArgumentException("Usuário e IP de origem são obrigatórios para registrar a tentativa.");
         }

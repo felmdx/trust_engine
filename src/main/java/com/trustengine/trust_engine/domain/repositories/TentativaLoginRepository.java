@@ -11,11 +11,11 @@ import java.util.UUID;
  */
 public interface TentativaLoginRepository {
 
-    List<TentativaLogin> findAllByUsuarioIdOrderByTimestampDesc(UUID usuarioId);
+    List<TentativaLogin> procuraTodosPorUsuarioIdOrderByTimestampDesc(UUID usuarioId);
     
-    void save(TentativaLogin TentativaLogin);
+    void salva(TentativaLogin TentativaLogin);
 
-    long countFailsByIpSince(String ipOrigem, LocalDateTime inicio);
+    long countFalhaPorIpDesde(String ipOrigem, LocalDateTime inicio);
     
-    long countFailByUserSince(UUID usuarioId, LocalDateTime inicio);
+    long countFalhaPorUserDesde(UUID usuarioId, LocalDateTime inicio);
 }
