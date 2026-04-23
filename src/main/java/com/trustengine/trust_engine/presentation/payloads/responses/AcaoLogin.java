@@ -1,4 +1,4 @@
-package com.trustengine.trust_engine.presentation.payloads;
+package com.trustengine.trust_engine.presentation.payloads.responses;
 
 public enum AcaoLogin {
     PERMITIR, 
