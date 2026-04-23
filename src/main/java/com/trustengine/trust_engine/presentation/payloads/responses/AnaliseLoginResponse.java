@@ -1,4 +1,4 @@
-package com.trustengine.trust_engine.presentation.payloads;
+package com.trustengine.trust_engine.presentation.payloads.responses;
 
 import com.trustengine.trust_engine.domain.enums.RiscoCalculado;
 
