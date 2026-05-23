@@ -1,32 +1,39 @@
 package com.trustengine.trust_engine.application.usecases;
 
 import com.trustengine.trust_engine.application.dtos.DispositivoConfiavelResponse;
+import com.trustengine.trust_engine.domain.entities.Dispositivo;
+import com.trustengine.trust_engine.domain.repositories.DispositivoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ListarDispositivosUseCase {
 
-    public List<DispositivoConfiavelResponse> execute(UUID userId) {
+    private final DispositivoRepository dispositivoRepository;
 
-        // Teste mockado. Todo: Implementar Repository 
-        String fingerprintReal = "a1b2c3d4e5f6g7h8i9j0";
-        String ultimosQuatro = fingerprintReal.substring(fingerprintReal.length() - 4).toUpperCase();
-        
-        return List.of(
-            new DispositivoConfiavelResponse(
-                UUID.randomUUID(), 
-                "Smartphone (Final " + ultimosQuatro + ")", 
-                LocalDateTime.now().minusDays(2)
-            ),
-            new DispositivoConfiavelResponse(
-                UUID.randomUUID(), 
-                "Windows PC (Final A4B2)", 
-                LocalDateTime.now()
-            )
-        );
+    public List<DispositivoConfiavelResponse> execute(UUID userId) {
+        List<Dispositivo> dispositivos = dispositivoRepository.procuraTodosPorUsuarioId(userId);
+
+        return dispositivos.stream()
+                .filter(Dispositivo::isConfiavel)
+                .map(d -> {
+                    String fingerprint = d.getDeviceFingerprint();
+                    
+                    String ultimosQuatro = fingerprint.length() > 4
+                            ? fingerprint.substring(fingerprint.length() - 4).toUpperCase()
+                            : fingerprint.toUpperCase();
+
+                    return new DispositivoConfiavelResponse(
+                            d.getId(),
+                            d.getModelo() + " (Final " + ultimosQuatro + ")",
+                            d.getDataVinculacao()
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }

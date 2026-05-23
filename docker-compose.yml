@@ -3,13 +3,13 @@ services:
     image: postgres:latest
     container_name: trust-engine-db
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: felipe_user
+      POSTGRES_PASSWORD: senha123
       POSTGRES_DB: trust_engine_db
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
 
 volumes:
   postgres_data:
