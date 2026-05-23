@@ -11,5 +11,12 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
 
+  redis:
+      image: redis:alpine
+      container_name: trustengine-redis
+      ports:
+        - "6379:6379"
+      restart: always
+      
 volumes:
   postgres_data:

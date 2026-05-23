@@ -13,10 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor // Importante: O Lombok vai injetar o seu DispositivoRepositoryImpl aqui automaticamente!
+@RequiredArgsConstructor
 public class AnaliseLoginUseCase {
 
-    // A Porta de entrada para o banco de dados
     private final DispositivoRepository dispositivoRepository;
 
     public AnaliseLoginResponse execute(AnaliseLoginRequest request) {
@@ -31,10 +30,13 @@ public class AnaliseLoginUseCase {
 
         Optional<Dispositivo> dispositivoOpt = dispositivoRepository.procuraPorFingerprint(request.getDeviceFingerprint());
 
-        if (dispositivoOpt.isEmpty() || !dispositivoOpt.get().isConfiavel()) {
+        if (dispositivoOpt.isEmpty() || 
+            !dispositivoOpt.get().isConfiavel() || 
+            !dispositivoOpt.get().getUsuarioId().toString().equals(request.getUserId().toString())) {
+            
             return AnaliseLoginResponse.builder()
                 .acao(AcaoRecomendada.EXIGIR_MFA)
-                .reason("DISPOSITIVO_NAO_RECONHECIDO_OU_REVOGADO")
+                .reason("DISPOSITIVO_NAO_RECONHECIDO_OU_PERTENCE_A_OUTRO_USUARIO")
                 .riskScore(RiscoCalculado.MEDIO)
                 .build();
         }
