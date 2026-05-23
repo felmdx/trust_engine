@@ -1,6 +1,5 @@
 package com.trustengine.trust_engine.presentation.controllers;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

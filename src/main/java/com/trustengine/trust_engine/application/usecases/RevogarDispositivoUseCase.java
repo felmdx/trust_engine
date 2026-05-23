@@ -1,18 +1,28 @@
 package com.trustengine.trust_engine.application.usecases;
 
+import com.trustengine.trust_engine.domain.entities.Dispositivo;
+import com.trustengine.trust_engine.domain.repositories.DispositivoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class RevogarDispositivoUseCase {
 
-    public void execute(UUID userId, UUID deviceId) {
+    private final DispositivoRepository dispositivoRepository;
 
-        // TOdo ao implementar banco: 
-        // 1. Buscar o dispositivo pelo deviceId
-        // 2. Verificar se ele realmente pertence ao userId (Prevenção contra IDOR)
-        // 3. Mudar o status para REVOGADO no banco
-        
-        System.out.println("Alerta: Dispositivo " + deviceId + " revogado para o usuário " + userId);
+    public void execute(UUID userId, UUID deviceId) {
+        Dispositivo dispositivo = dispositivoRepository.procuraPorId(deviceId)
+                .orElseThrow(() -> new IllegalArgumentException("Dispositivo não encontrado."));
+
+        if (!dispositivo.getUsuarioId().equals(userId)) {
+            throw new IllegalArgumentException("Acesso negado: O dispositivo não pertence a este utilizador.");
+        }
+
+        dispositivo.revogarConfianca();
+
+        dispositivoRepository.salva(dispositivo);
     }
 }
