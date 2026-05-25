@@ -58,6 +58,7 @@ trust-engine
 * **Spring Boot 3.x** (Core do ecossistema e gerenciamento de inversão de controle)
 * **PostgreSQL** (Banco de dados relacional para persistência de dados de alta integridade)
 * **Redis (Alpine OS)** (Banco NoSQL em memória utilizado como barreira ultra rápida)
+* **RabbitMQ** (Mensageria assíncrona para disparo de eventos desacoplados, como envio de MFA)
 * **Docker & Docker Compose** (Orquestração local e padronização de ambientes de desenvolvimento)
 * **Maven** (Gerenciador de dependências e automação de builds)
 
@@ -68,6 +69,8 @@ trust-engine
 Defesa contra Força Bruta (Rate Limiting): Criei um RateLimitingFilter com Redis. Se um IP disparar mais de 5 logins em 1 minuto, ele toma bloqueio (Too Many Requests) antes mesmo de bater no banco.
 
 Evitando Falhas de Controle de Acesso (Broken Access Control): O sistema não olha só se o celular é confiável, mas checa se aquele aparelho pertence exatamente ao usuário que está logando, prevenindo roubo de sessões.
+
+Mensageria Assíncrona (Event-Driven): Uso do RabbitMQ para terceirizar processos lentos. Quando o motor exige MFA, ele não bloqueia a resposta. A decisão HTTP é devolvida instantaneamente e um evento MfaSolicitadoEvent é jogado na fila para que um Worker em segundo plano processe (simulando envio de SMS).
 
 Segredos Seguros: Utilização de variáveis de ambiente (${DB_PASS:senha_local}) para o código rodar liso na minha máquina, mas seguro quando for para produção/nuvem.---
 
