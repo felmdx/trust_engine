@@ -1,5 +1,7 @@
 package com.trustengine.trust_engine.application.usecases;
 
+import com.trustengine.trust_engine.application.dtos.events.MfaSolicitadoEvent;
+import com.trustengine.trust_engine.application.ports.MfaEventPublisher;
 import com.trustengine.trust_engine.domain.entities.Dispositivo;
 import com.trustengine.trust_engine.domain.enums.AcaoRecomendada;
 import com.trustengine.trust_engine.domain.enums.RiscoCalculado;
@@ -10,6 +12,7 @@ import com.trustengine.trust_engine.presentation.payloads.responses.AnaliseLogin
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -17,10 +20,14 @@ import java.util.Optional;
 public class AnaliseLoginUseCase {
 
     private final DispositivoRepository dispositivoRepository;
+    private final MfaEventPublisher mfaEventPublisher;
 
     public AnaliseLoginResponse execute(AnaliseLoginRequest request) {
         
         if (!request.getIsPasswordValid()) {
+
+            System.out.println("[LOGGER] Senha inválida.");
+
             return AnaliseLoginResponse.builder()
                 .acao(AcaoRecomendada.NEGAR)
                 .reason("CREDENCIAIS_INVALIDAS")
@@ -33,6 +40,14 @@ public class AnaliseLoginUseCase {
         if (dispositivoOpt.isEmpty() || 
             !dispositivoOpt.get().isConfiavel() || 
             !dispositivoOpt.get().getUsuarioId().toString().equals(request.getUserId().toString())) {
+
+            System.out.println("[LOGGER] Dispositivo não reconhecido: MFA solicitado.");
+            
+            mfaEventPublisher.publish(MfaSolicitadoEvent.builder()
+            .userId(request.getUserId().toString())
+            .reason("DISPOSITIVO_NAO_RECONHECIDO")
+            .timestamp(LocalDateTime.now())
+            .build());
             
             return AnaliseLoginResponse.builder()
                 .acao(AcaoRecomendada.EXIGIR_MFA)
@@ -40,6 +55,8 @@ public class AnaliseLoginUseCase {
                 .riskScore(RiscoCalculado.MEDIO)
                 .build();
         }
+
+        System.out.println("[LOGGER] Senha válida.");
 
         return AnaliseLoginResponse.builder()
             .acao(AcaoRecomendada.PERMITIR)
