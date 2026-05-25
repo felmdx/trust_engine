@@ -81,14 +81,15 @@ docker compose up -d
 ```
 ### Teste Ponta a Ponta
 
-Passo 1: O Primeiro Login (Aparelho Desconhecido)
+#### Passo 1: O Primeiro Login (Aparelho Desconhecido)
 Vamos simular um usuário logando pela primeira vez. Como o banco está vazio, o motor vai barrar.
 
+```
 POST http://localhost:8080/api/v1/auth/analyze-login
-
+```
 Body (JSON):
 
-JSON
+```JSON
 {
   "userId": "550e8400-e29b-41d4-a716-446655440000",
   "ipAddress": "192.168.1.50",
@@ -96,33 +97,41 @@ JSON
   "deviceFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "isPasswordValid": true
 }
+```
+```
 Resultado: O motor deve retornar a ação EXIGIR_MFA.
+```
 
-Passo 2: Vinculando o Aparelho (Simulando o MFA correto)
+#### Passo 2: Vinculando o Aparelho (Simulando o MFA correto)
 O usuário digitou o SMS no app, então avisamos nossa API para salvar esse celular como confiável.
 
+```
 POST http://localhost:8080/api/v1/devices
-
+```
 Body (JSON):
 
-JSON
+```JSON
 {
   "userId": "550e8400-e29b-41d4-a716-446655440000",
   "deviceFingerprint": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "modelo": "iPhone 13 - iOS 16"
 }
-Resultado: Status 201 Created. (Salvou no Postgres!)
+```
 
-Passo 3: O Segundo Login (Agora ele entra!)
+```
+Resultado: Status 201 Created. (Salvou no Postgres)
+```
+
+#### Passo 3: O Segundo Login (Agora ele entra!)
 O usuário tenta logar de novo no dia seguinte com o mesmo celular.
-
+```
 POST http://localhost:8080/api/v1/auth/analyze-login
-
+```
 Envie exatamente o mesmo JSON do Passo 1.
 
 Resultado: Agora o motor acha o celular no banco, vê que é do usuário e retorna PERMITIR com risco BAIXO.
 
-Passo 4: O Teste do Escudo (Rate Limit)
+#### Passo 4: O Teste do Escudo (Rate Limit)
 Fique clicando no botão de Send do login repetidas vezes bem rápido.
 
-Na 6ª vez, o terminal vai avisar do ataque e o Postman vai receber um Erro 429 bloqueando o seu IP!
+Na 6ª vez, o terminal vai avisar do ataque e o Postman vai receber um Erro 429 bloqueando o seu IP.
