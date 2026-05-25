@@ -23,20 +23,24 @@ O projeto adota os princípios da **Clean Architecture (Arquitetura Hexagonal / 
 ```text
 trust-engine
 └── src/main/java/com/trustengine/trust_engine
-    ├── application/               # Orquestra as coisas (Casos de Uso e DTOs)
+    ├── application/          
     │   ├── dtos
+    |   |   └── events             # Eventos de mensageria
+    |   ├── ports                  # Interface do publisher
     │   └── usecases
-    ├── domain/                    # O coração do negócio (Puro Java, sem Spring!)
-    │   ├── entities               # Nossas classes ricas (Dispositivo, Login)
+    ├── domain/                   
+    │   ├── entities               # Classes ricas (Dispositivo, Login)
     │   ├── enums
     │   ├── exceptions
     │   ├── policies               # Regras específicas
-    │   └── repositories           # Apenas interfaces (Contratos)
+    │   └── repositories           # Apenas interfaces
     ├── infrastructure/            # Comunicação externa, Banco de Dados e Segurança
+    |   ├── messaging
+    |   |   └── rabbitmq           # Adapter da Mensageria e simulação de consumer
     │   ├── persistence
     │   │   ├── postgres           # Implementação do JPA e PostgreSQL
     │   │   └── redis              # Adaptador do NoSQL
-    │   └── security               # Nossos filtros de defesa (AppSec)
+    │   └── security               
     └── presentation/              # A porta de entrada da API (REST)
         ├── controllers
         │   ├── advice             # Tratamento global de erros
