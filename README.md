@@ -6,7 +6,7 @@ Este projeto foi desenhado com base nos padrões atuais de engenharia de softwar
 
 ---
 
-## 🎯 Problema de Negócio Solucionado
+## Solução do Motor de Análise
 
 Tendo em vista que atacantes utilizam bots para testar milhões de credenciais vazadas por minuto (*Credential Stuffing*) ou tentar adivinhar senhas (*Brute Force*), se faz necessário adicionar camadas de defesa além da própria senha.
 O **TrustEngine** atua como uma **camada de defesa inteligente** entre o usuário e o core bancário, decidindo de forma autônoma se o acesso deve ser:
